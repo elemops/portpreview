@@ -26,7 +26,8 @@ npx portpreview@0.1.0 3000
 | Flag | Description |
 |------|-------------|
 | `--host <addr>` | Local address to forward to (default `127.0.0.1`) |
-| `--subdomain <name>` | Request a specific subdomain |
+| `--subdomain <name>` | Use a subdomain reserved in your PortPreview account |
+| `--token <token>` | Authenticate with a CLI token from the dashboard |
 | `--gateway <url>` | WebSocket gateway URL |
 | `--domain <domain>` | Public tunnel domain |
 | `-q, --quiet` | Print only the public URL |
@@ -39,6 +40,25 @@ npx portpreview@0.1.0 3000
 |----------|---------|
 | `PORTPREVIEW_GATEWAY_URL` | `wss://gateway.portpreview.dev/tunnel` |
 | `PORTPREVIEW_TUNNEL_DOMAIN` | `portpreview.dev` |
+| `PORTPREVIEW_TOKEN` | CLI token used for reserved subdomains |
+
+## Reserved subdomains
+
+Create a free account at [portpreview.com/register](https://portpreview.com/register), reserve a
+subdomain in the dashboard, and create a CLI token. Then either pass the token directly:
+
+```bash
+npx portpreview 3000 --subdomain my-project --token pp_live_...
+```
+
+Or keep it out of shell history:
+
+```bash
+export PORTPREVIEW_TOKEN=pp_live_...
+npx portpreview 3000 --subdomain my-project
+```
+
+Commands without `--subdomain` continue to work anonymously with a random URL.
 
 ## Programmatic API
 

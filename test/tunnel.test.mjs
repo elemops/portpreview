@@ -19,6 +19,16 @@ describe('config', () => {
   it('rejects invalid port', () => {
     assert.throws(() => parseArgs(['99999']), /Invalid port/)
   })
+
+  it('requires a token for a reserved subdomain', () => {
+    assert.throws(
+      () => parseArgs(['3000', '--subdomain', 'my-app']),
+      /Reserved subdomains require/,
+    )
+    const opts = parseArgs(['3000', '--subdomain', 'my-app', '--token', 'pp_live_test'])
+    assert.equal(opts.subdomain, 'my-app')
+    assert.equal(opts.apiToken, 'pp_live_test')
+  })
 })
 
 describe('protocol', () => {
