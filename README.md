@@ -26,20 +26,16 @@ npx portpreview@0.1.0 3000
 | Flag | Description |
 |------|-------------|
 | `--host <addr>` | Local address to forward to (default `127.0.0.1`) |
-| `--subdomain <name>` | Use a subdomain reserved in your PortPreview account |
+| `--subdomain <name>` | Use a name you reserved in your dashboard (e.g. `my-project` → `my-project.portpreview.dev`) |
 | `--token <token>` | Authenticate with a CLI token from the dashboard |
-| `--gateway <url>` | WebSocket gateway URL |
-| `--domain <domain>` | Public tunnel domain |
 | `-q, --quiet` | Print only the public URL |
 | `-h, --help` | Show help |
 | `-v, --version` | Show version |
 
 ## Environment
 
-| Variable | Default |
-|----------|---------|
-| `PORTPREVIEW_GATEWAY_URL` | `wss://gateway.portpreview.dev/tunnel` |
-| `PORTPREVIEW_TUNNEL_DOMAIN` | `portpreview.dev` |
+| Variable | Description |
+|----------|-------------|
 | `PORTPREVIEW_TOKEN` | CLI token used for reserved subdomains |
 | `PORTPREVIEW_CONFIG` | Override local config file path |
 
@@ -108,6 +104,15 @@ await tunnel.close()
 ```
 
 ## Development
+
+For local gateway development only (not needed for normal use):
+
+| Flag / variable | Default | Purpose |
+|-----------------|---------|---------|
+| `--gateway <url>` | `wss://gateway.portpreview.dev/tunnel` | Point the CLI at another gateway |
+| `--domain <domain>` | `portpreview.dev` | Base hostname used in public URLs |
+| `PORTPREVIEW_GATEWAY_URL` | same as above | Env override for `--gateway` |
+| `PORTPREVIEW_TUNNEL_DOMAIN` | `portpreview.dev` | Env override for `--domain` |
 
 ```bash
 git clone https://github.com/elemops/portpreview.git
