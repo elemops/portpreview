@@ -2,10 +2,18 @@
 
 import packageJson from '../package.json' with { type: 'json' }
 import { parseArgs, printHelp } from '../lib/config.mjs'
+import { runConfigCommand } from '../lib/config-cli.mjs'
 import { openTunnel } from '../lib/tunnel-client.mjs'
 
 async function main() {
-  const parsed = parseArgs()
+  const argv = process.argv.slice(2)
+
+  if (argv[0] === 'config') {
+    runConfigCommand(argv.slice(1))
+    return
+  }
+
+  const parsed = parseArgs(argv)
 
   if ('help' in parsed) {
     printHelp()

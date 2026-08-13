@@ -41,17 +41,54 @@ npx portpreview@0.1.0 3000
 | `PORTPREVIEW_GATEWAY_URL` | `wss://gateway.portpreview.dev/tunnel` |
 | `PORTPREVIEW_TUNNEL_DOMAIN` | `portpreview.dev` |
 | `PORTPREVIEW_TOKEN` | CLI token used for reserved subdomains |
+| `PORTPREVIEW_CONFIG` | Override local config file path |
+
+## Persistent token (recommended)
+
+Save your CLI token once, like ngrok's `config add-authtoken`:
+
+```bash
+npx portpreview config set-token pp_live_...
+npx portpreview 3000
+```
+
+Default config locations:
+
+| OS | Path |
+|----|------|
+| Linux | `~/.config/portpreview/config.json` |
+| macOS | `~/Library/Application Support/portpreview/config.json` |
+| Windows | `%LOCALAPPDATA%\\portpreview\\config.json` |
+
+Check where your config is stored:
+
+```bash
+npx portpreview config check
+```
+
+Remove the saved token:
+
+```bash
+npx portpreview config unset-token
+```
 
 ## Reserved subdomains
 
 Create a free account at [portpreview.com/register](https://portpreview.com/register), reserve a
-subdomain in the dashboard, and create a CLI token. Then either pass the token directly:
+subdomain in the dashboard, and save your default CLI token. Then either pass the token directly:
 
 ```bash
 npx portpreview 3000 --subdomain my-project --token pp_live_...
 ```
 
-Or keep it out of shell history:
+Or save it once with config:
+
+```bash
+npx portpreview config set-token pp_live_...
+npx portpreview 3000 --subdomain my-project
+```
+
+Or keep it in the current shell only:
 
 ```bash
 export PORTPREVIEW_TOKEN=pp_live_...
