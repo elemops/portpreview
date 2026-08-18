@@ -26,19 +26,72 @@ npx portpreview@0.1.0 3000
 | Flag | Description |
 |------|-------------|
 | `--host <addr>` | Local address to forward to (default `127.0.0.1`) |
-| `--subdomain <name>` | Request a specific subdomain |
-| `--gateway <url>` | WebSocket gateway URL |
-| `--domain <domain>` | Public tunnel domain |
+| `--subdomain <name>` | Use a name you reserved in your dashboard (e.g. `my-project` → `my-project.portpreview.dev`) |
+| `--token <token>` | Authenticate with a CLI token from the dashboard |
 | `-q, --quiet` | Print only the public URL |
 | `-h, --help` | Show help |
 | `-v, --version` | Show version |
 
 ## Environment
 
-| Variable | Default |
-|----------|---------|
-| `PORTPREVIEW_GATEWAY_URL` | `wss://gateway.portpreview.dev/tunnel` |
-| `PORTPREVIEW_TUNNEL_DOMAIN` | `portpreview.dev` |
+| Variable | Description |
+|----------|-------------|
+| `PORTPREVIEW_TOKEN` | CLI token used for reserved subdomains |
+| `PORTPREVIEW_CONFIG` | Override local config file path |
+
+## Persistent token (recommended)
+
+Save your CLI token once, like ngrok's `config add-authtoken`:
+
+```bash
+npx portpreview config set-token pp_live_...
+npx portpreview 3000
+```
+
+Default config locations:
+
+| OS | Path |
+|----|------|
+| Linux | `~/.config/portpreview/config.json` |
+| macOS | `~/Library/Application Support/portpreview/config.json` |
+| Windows | `%LOCALAPPDATA%\\portpreview\\config.json` |
+
+Check where your config is stored:
+
+```bash
+npx portpreview config check
+```
+
+Remove the saved token:
+
+```bash
+npx portpreview config unset-token
+```
+
+## Reserved subdomains
+
+Create a free account at [portpreview.com/register](https://portpreview.com/register), reserve a
+subdomain in the dashboard, and save your default CLI token. Then either pass the token directly:
+
+```bash
+npx portpreview 3000 --subdomain my-project --token pp_live_...
+```
+
+Or save it once with config:
+
+```bash
+npx portpreview config set-token pp_live_...
+npx portpreview 3000 --subdomain my-project
+```
+
+Or keep it in the current shell only:
+
+```bash
+export PORTPREVIEW_TOKEN=pp_live_...
+npx portpreview 3000 --subdomain my-project
+```
+
+Commands without `--subdomain` continue to work anonymously with a random URL.
 
 ## Programmatic API
 
@@ -51,6 +104,15 @@ await tunnel.close()
 ```
 
 ## Development
+
+For local gateway development only (not needed for normal use):
+
+| Flag / variable | Default | Purpose |
+|-----------------|---------|---------|
+| `--gateway <url>` | `wss://gateway.portpreview.dev/tunnel` | Point the CLI at another gateway |
+| `--domain <domain>` | `portpreview.dev` | Base hostname used in public URLs |
+| `PORTPREVIEW_GATEWAY_URL` | same as above | Env override for `--gateway` |
+| `PORTPREVIEW_TUNNEL_DOMAIN` | `portpreview.dev` | Env override for `--domain` |
 
 ```bash
 git clone https://github.com/elemops/portpreview.git
