@@ -1,6 +1,6 @@
 {
   "name": "portpreview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Expose a local port through a public HTTPS URL — webhook debugging, OAuth callbacks, and dev previews.",
   "type": "module",
   "main": "./lib/index.mjs",
