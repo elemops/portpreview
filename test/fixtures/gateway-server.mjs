@@ -1,7 +1,7 @@
 import crypto from 'node:crypto'
 import http from 'node:http'
 import { WebSocketServer } from 'ws'
-import { parseMessage, PROTOCOL_VERSION, send } from '../../lib/protocol.mjs'
+import { attachedBody, parseMessage, PROTOCOL_VERSION, send } from '../../lib/protocol.mjs'
 
 const SUBDOMAIN_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789'
 
@@ -159,7 +159,7 @@ export function createGatewayServer(options = {}) {
       waiter.resolve({
         status: Number(message.status ?? 502),
         headers: /** @type {Record<string, string>} */ (message.headers ?? {}),
-        body: message.body ? Buffer.from(String(message.body), 'base64') : Buffer.alloc(0),
+        body: attachedBody(message),
       })
     } catch {
       // ignore malformed client messages
@@ -184,18 +184,21 @@ export function createGatewayServer(options = {}) {
         }, 30_000)
 
         pending.set(id, { resolve, reject, timer })
-        send(tunnel, {
-          type: 'request',
-          id,
-          method: req.method,
-          path: req.url,
-          headers: Object.fromEntries(
-            Object.entries(req.headers).flatMap(([key, value]) =>
-              value === undefined ? [] : [[key, Array.isArray(value) ? value.join(', ') : value]],
+        send(
+          tunnel,
+          {
+            type: 'request',
+            id,
+            method: req.method,
+            path: req.url,
+            headers: Object.fromEntries(
+              Object.entries(req.headers).flatMap(([key, value]) =>
+                value === undefined ? [] : [[key, Array.isArray(value) ? value.join(', ') : value]],
+              ),
             ),
-          ),
-          body: chunks.length ? Buffer.concat(chunks).toString('base64') : undefined,
-        })
+          },
+          chunks.length ? Buffer.concat(chunks) : undefined,
+        )
       })
 
       req.on('error', reject)
