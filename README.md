@@ -63,3 +63,24 @@ node bin/portpreview.mjs 3000
 ## License
 
 Apache-2.0
+
+## Tunnel sessions and request history
+
+Free accounts and anonymous visitors can run one active tunnel at a time. Free
+sessions end after two hours; Pro sessions end after five hours. Run the command
+again to start another session. Ultra and Team sessions have no time limit.
+There is no automatic reconnect after a session expires.
+
+HTTP and WebSocket traffic (including Vite/Next.js hot reload) use the same
+protocol v2 tunnel. Gateway and CLI must both be updated together. The existing
+1 MiB wire body limit remains; request history captures up to 64 KiB per request
+and response body, with truncation clearly flagged. Requests made by automated
+agents and webhooks are included.
+
+Protect reserved preview domains with a password or IP/CIDR allowlist in the
+dashboard (Pro and above). A password uses HTTP Basic authentication; enter any
+username and your preview password. This credential is consumed by the gateway
+and is not forwarded to localhost. Application HTTP Basic authentication cannot
+share the same Authorization header, so use an application session cookie or a
+bearer token route without preview password protection. Policy changes and token
+revocations take effect within 30 seconds on connected gateways.
