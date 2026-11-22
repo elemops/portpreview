@@ -1,7 +1,7 @@
 {
   "name": "portpreview",
-  "version": "0.1.1",
-  "description": "Expose a local port through a public HTTPS URL — webhook debugging, OAuth callbacks, and dev previews.",
+  "version": "0.3.2",
+  "description": "Instant secure previews for localhost apps — expose a local port through a public HTTPS URL.",
   "type": "module",
   "main": "./lib/index.mjs",
   "exports": {
@@ -10,20 +10,31 @@
     "./package.json": "./package.json"
   },
   "bin": {
-    "portpreview": "bin/portpreview.mjs"
+    "portpreview": "./bin/portpreview.mjs"
   },
   "files": [
     "bin/portpreview.mjs",
-    "lib",
-    "README.md",
-    "LICENSE"
+    "lib/cli-main.mjs",
+    "lib/client-info.mjs",
+    "lib/config-cli.mjs",
+    "lib/config.mjs",
+    "lib/geo.mjs",
+    "lib/http-stream.mjs",
+    "lib/index.mjs",
+    "lib/inspector-server.mjs",
+    "lib/inspector-store.mjs",
+    "lib/inspector-ui.mjs",
+    "lib/protocol.mjs",
+    "lib/tcp-client.mjs",
+    "lib/tunnel-client.mjs",
+    "lib/user-config.mjs",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
   ],
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
   "scripts": {
     "prepublishOnly": "npm test",
+    "start": "node bin/portpreview.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "keywords": [
@@ -34,7 +45,8 @@
     "devtools",
     "cli",
     "ngrok",
-    "localtunnel"
+    "localtunnel",
+    "tcp-tunnel"
   ],
   "engines": {
     "node": ">=18"
@@ -50,5 +62,9 @@
   },
   "dependencies": {
     "ws": "^8.19.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

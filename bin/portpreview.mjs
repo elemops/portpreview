@@ -1,76 +1,12 @@
 #!/usr/bin/env node
 
-import packageJson from '../package.json' with { type: 'json' }
-import { parseArgs, printHelp } from '../lib/config.mjs'
-import { runConfigCommand } from '../lib/config-cli.mjs'
-import { openTunnel } from '../lib/tunnel-client.mjs'
+import { createRequire } from 'node:module'
+import { runCli } from '../lib/cli-main.mjs'
 
-async function main() {
-  const argv = process.argv.slice(2)
+const require = createRequire(import.meta.url)
+const { version } = require('../package.json')
 
-  if (argv[0] === 'config') {
-    runConfigCommand(argv.slice(1))
-    return
-  }
-
-  const parsed = parseArgs(argv)
-
-  if ('help' in parsed) {
-    printHelp()
-    return
-  }
-
-  if ('version' in parsed) {
-    console.log(packageJson.version)
-    return
-  }
-
-  const target = `http://${parsed.host}:${parsed.port}`
-
-  if (!parsed.quiet) {
-    console.log('Connecting to gateway…')
-    console.log(`Forwarding ${target}`)
-  }
-
-  let tunnel
-  try {
-    tunnel = await openTunnel(parsed)
-  } catch (err) {
-    console.error(`Error: ${err instanceof Error ? err.message : String(err)}`)
-    process.exit(1)
-  }
-
-  if (!parsed.quiet) {
-    console.log('Connected')
-    console.log(`URL:    ${tunnel.url}`)
-    console.log(`Target: ${target}`)
-    console.log('Press Ctrl+C to stop.')
-  } else {
-    console.log(tunnel.url)
-  }
-
-  let shuttingDown = false
-  const shutdown = () => {
-    if (shuttingDown) {
-      process.exit(1)
-      return
-    }
-    shuttingDown = true
-
-    tunnel
-      .close()
-      .then(() => process.exit(0))
-      .catch((err) => {
-        console.error(`Error: ${err instanceof Error ? err.message : String(err)}`)
-        process.exit(1)
-      })
-  }
-
-  process.on('SIGINT', shutdown)
-  process.on('SIGTERM', shutdown)
-}
-
-main().catch((err) => {
+runCli(process.argv.slice(2), { version }).catch((err) => {
   console.error(`Error: ${err instanceof Error ? err.message : String(err)}`)
   process.exit(1)
 })
