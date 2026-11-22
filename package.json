@@ -1,6 +1,6 @@
 {
   "name": "portpreview",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Instant secure previews for localhost apps — expose a local port through a public HTTPS URL.",
   "type": "module",
   "main": "./lib/index.mjs",
@@ -25,6 +25,8 @@
     "lib/inspector-store.mjs",
     "lib/inspector-ui.mjs",
     "lib/protocol.mjs",
+    "lib/share-cli.mjs",
+    "lib/share-server.mjs",
     "lib/tcp-client.mjs",
     "lib/tunnel-client.mjs",
     "lib/user-config.mjs",

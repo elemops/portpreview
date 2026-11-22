@@ -34,6 +34,9 @@ No signup and no config file. Requires Node.js 18 or newer.
 - **WebSocket, Server-Sent Events, and HMR** through the tunnel.
 - **Streaming bodies** with no total size limit, and automatic reconnect with
   backoff after network loss.
+- **File and folder sharing**: `npx portpreview share ./folder` sends a private,
+  read-only link with a file browser, in-browser previews, ZIP download of any folder,
+  and optional password and expiry.
 - **No session time limit** on any plan.
 
 With a free account you also get a reserved subdomain, request history in the web
@@ -48,6 +51,7 @@ npx portpreview 3000                          # random subdomain
 npx portpreview config set-token pp_live_...  # save a CLI token from the dashboard
 npx portpreview 3000 --subdomain my-app       # reserved subdomain
 npx portpreview tcp 5432                      # raw TCP tunnel (paid plans)
+npx portpreview share ./photos                # share a folder or file, read-only
 ```
 
 | Option | Description |
@@ -59,6 +63,9 @@ npx portpreview tcp 5432                      # raw TCP tunnel (paid plans)
 | `--domain <domain>` | Public tunnel domain (default `portpreview.dev`) |
 | `--no-inspect` / `--inspect-port <n>` | Turn the local inspector off, or choose its port (default `4041`) |
 | `-q, --quiet` | Print only the public URL |
+| `--password <value>` | `share` only: also ask visitors for a password |
+| `--expires <time>` | `share` only: stop sharing after `30m`, `2h`, `1d` … (at most `7d`) |
+| `--include-hidden` | `share` only: also share dot-files (`.env`, `.git` …) and private keys |
 | `-h, --help` / `-v, --version` | Help and version |
 
 | Environment variable | Description |
@@ -67,6 +74,15 @@ npx portpreview tcp 5432                      # raw TCP tunnel (paid plans)
 | `PORTPREVIEW_CONFIG` | Config file path (default `~/.config/portpreview/config.json` on Linux) |
 | `PORTPREVIEW_GATEWAY_URL` | Gateway WebSocket URL |
 | `PORTPREVIEW_TUNNEL_DOMAIN` | Public tunnel domain |
+| `PORTPREVIEW_SHARE_PASSWORD` | Password for `portpreview share` |
+
+### Sharing files and folders
+
+`portpreview share <path>` serves a folder or a single file read-only through an ordinary
+tunnel. Files are reachable only under a random 128-bit path printed by the CLI
+(`https://abc12.portpreview.dev/s/<secret>/`); everything else answers 404. Dot-files and
+private keys are skipped unless you pass `--include-hidden`, and symlinks never lead outside
+the shared folder. Sharing stops on Ctrl+C or when `--expires` runs out.
 
 If your server listens only on IPv6 `::1` (default Vite), start it with
 `--host 127.0.0.1` or pass `--host ::1` to the CLI.
